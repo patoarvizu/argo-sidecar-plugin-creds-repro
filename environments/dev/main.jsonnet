@@ -1,5 +1,5 @@
-(import "grafana.libsonnet") +
-(import "prometheus.libsonnet") +
+(import "jsonnet/grafana.libsonnet") +
+(import "jsonnet/prometheus.libsonnet") +
 {
   _config:: {
     grafana: {
