@@ -1,0 +1,17 @@
+nameOverride: tanka-plugin
+configmapData:
+  tanka-plugin.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: tanka-plugin
+    spec:
+      version: v1.0
+      init:
+        command: [sh, -c, 'jb install']
+      generate:
+        command: [sh, -c, 'tk show ${TK_ENV} --dangerous-allow-redirect']
+      discover:
+        fileName: jsonnetfile.json
+      allowConcurrency: true
+      lockRepo: true

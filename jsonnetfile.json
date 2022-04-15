@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "dependencies": [
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/patoarvizu/argo-sidecar-plugin-creds-repro.git",
+          "subdir": "jsonnet"
+        }
+      },
+      "version": "repro"
+    }
+  ],
+  "legacyImports": true
+}

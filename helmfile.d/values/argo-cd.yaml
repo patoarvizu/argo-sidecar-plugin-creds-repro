@@ -1,0 +1,80 @@
+global:
+  image:
+    tag: v2.2.8
+    # tag: v2.3.3
+
+dex:
+  enabled: false
+
+notifications:
+  enabled: false
+
+configs:
+  secret:
+    argocdServerAdminPassword: $2a$04$7G3C2JYmHOwHEDMY9GT6qei4PoVe03FtDSYhTsEQR.H8OaXnH3d0i # admin123
+
+server:
+  service:
+    type: LoadBalancer
+  extraArgs:
+  - --insecure
+  config:
+    url: http://localhost:8080/
+  ingress:
+    enabled: false
+
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: false
+
+repoServer:
+  volumes:
+  - configMap:
+      name: tanka-plugin
+    name: tanka-plugin
+  - configMap:
+      name: git-creds-config
+      items:
+      - key: git-ask-pass.sh
+        path: git-ask-pass.sh
+        mode: 0755
+    name: git-creds-config
+
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: false
+
+  extraContainers:
+  - name: tanka
+    command: [/var/run/argocd/argocd-cmp-server]
+    image: grafana/tanka:0.19.0
+    imagePullPolicy: IfNotPresent
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 999
+    volumeMounts:
+    - mountPath: /var/run/argocd
+      name: var-files
+    - mountPath: /home/argocd/cmp-server/plugins
+      name: plugins
+    - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+      subPath: tanka-plugin.yaml
+      name: tanka-plugin
+    - mountPath: /tmp
+      name: tmp-dir
+    - mountPath: /usr/local/bin/git-ask-pass.sh
+      subPath: git-ask-pass.sh
+      name: git-creds-config
+    env:
+    - name: GIT_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: argocd-repo-creds-github
+          key: username
+    - name: GIT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: argocd-repo-creds-github
+          key: password
