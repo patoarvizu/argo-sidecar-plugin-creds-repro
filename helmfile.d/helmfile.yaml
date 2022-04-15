@@ -1,0 +1,33 @@
+repositories:
+- name: argo
+  url: https://argoproj.github.io/argo-helm
+- name: k8s-as-helm
+  url: https://ameijer.github.io/k8s-as-helm/
+
+releases:
+- name: tanka-plugin-configmap
+  chart: k8s-as-helm/configmap
+  namespace: argocd
+  version: 1.0.3
+  values:
+  - values/tanka-configmap.yaml
+- name: git-creds-config-configmap
+  chart: k8s-as-helm/configmap
+  namespace: argocd
+  version: 1.0.3
+  values:
+  - values/git-creds-config-configmap.yaml
+- name: argo-cd
+  chart: argo/argo-cd
+  namespace: argocd
+  version: 4.5.3
+  wait: true
+  values:
+  - values/argo-cd.yaml
+  - values/argo-cd-credential-templates.yaml.gotmpl
+
+helmDefaults:
+  kubeContext: k3d-k3s-default
+  args:
+  - --kubeconfig
+  - "{{ env "HOME" }}/.k3d/k3s-default-config"

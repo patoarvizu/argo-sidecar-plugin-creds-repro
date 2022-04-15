@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tanka-application
+  namespace: argocd
+spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  source:
+    path: '.'
+    repoURL: https://github.com/patoarvizu/argo-sidecar-plugin-creds-repro.git
+    targetRevision: repro
+    plugin:
+      env:
+        - name: TK_ENV
+          value: environments/dev
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
