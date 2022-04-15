@@ -10,7 +10,7 @@ spec:
   source:
     path: '.'
     repoURL: https://github.com/patoarvizu/argo-sidecar-plugin-creds-repro.git
-    targetRevision: repro
+    targetRevision: main
     plugin:
       env:
         - name: TK_ENV
